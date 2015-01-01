@@ -11,42 +11,21 @@
 
 namespace Sg\DatatablesBundle\Datatable\Column;
 
-use Sg\DatatablesBundle\Datatable\Column\AbstractColumn as BaseColumn;
-
-use Exception;
+use Symfony\Component\PropertyAccess\Exception\InvalidArgumentException;
 
 /**
  * Class ArrayColumn
  *
  * @package Sg\DatatablesBundle\Datatable\Column
  */
-class ArrayColumn extends BaseColumn
+class ArrayColumn extends AbstractColumn
 {
-    //-------------------------------------------------
-    // Ctor.
-    //-------------------------------------------------
-
     /**
-     * Ctor.
+     * Default content.
      *
-     * @param null|string $property An entity's property
-     *
-     * @throws Exception
+     * @var string
      */
-    public function __construct($property = null)
-    {
-        if (null === $property) {
-            throw new Exception("The entity's property can not be null.");
-        }
-
-        if (false === strstr($property, '.')) {
-            throw new Exception("An association is expected.");
-        }
-
-        parent::__construct($property);
-
-        $this->addAllowedOption("read_as");
-    }
+    protected $default;
 
 
     //-------------------------------------------------
@@ -56,9 +35,50 @@ class ArrayColumn extends BaseColumn
     /**
      * {@inheritdoc}
      */
-    public function getColumnClassName()
+    public function setData($data)
     {
-        return "array";
+        if (empty($data) || !is_string($data)) {
+            throw new InvalidArgumentException("setData(): String expected.");
+        }
+
+        if (false === strstr($data, '.')) {
+            throw new InvalidArgumentException("setData(): An association is expected.");
+        }
+
+        $this->data = $data;
+
+        return $this;
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    public function setRender($render)
+    {
+        $this->render = $render;
+
+        return $this;
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    public function setDefaults()
+    {
+        $this->setClassName("");
+        $this->setContentPadding("");
+        $this->setDefaultContent("");
+        $this->setName("");
+        $this->setOrderable(true);
+        $this->setRender(null);
+        $this->setSearchable(true);
+        $this->setTitle("");
+        $this->setType("");
+        $this->setVisible(true);
+        $this->setWidth("");
+        $this->setDefault("");
+
+        return $this;
     }
 
     /**
@@ -66,14 +86,84 @@ class ArrayColumn extends BaseColumn
      */
     public function setOptions(array $options)
     {
-        parent::setOptions($options);
-
-        $options = array_change_key_case($options, CASE_LOWER);
-        $options = array_intersect_key($options, array_flip($this->getAllowedOptions()));
-
+        if (array_key_exists("class", $options)) {
+            $this->setClassName($options["class"]);
+        }
+        if (array_key_exists("padding", $options)) {
+            $this->setContentPadding($options["padding"]);
+        }
+        if (array_key_exists("name", $options)) {
+            $this->setName($options["name"]);
+        }
+        if (array_key_exists("orderable", $options)) {
+            $this->setOrderable($options["orderable"]);
+        }
+        if (array_key_exists("searchable", $options)) {
+            $this->setSearchable($options["searchable"]);
+        }
+        if (array_key_exists("title", $options)) {
+            $this->setTitle($options["title"]);
+        }
+        if (array_key_exists("type", $options)) {
+            $this->setType($options["type"]);
+        }
+        if (array_key_exists("visible", $options)) {
+            $this->setVisible($options["visible"]);
+        }
+        if (array_key_exists("width", $options)) {
+            $this->setWidth($options["width"]);
+        }
+        if (array_key_exists("default", $options)) {
+            $this->setDefault($options["default"]);
+        }
         if (array_key_exists("read_as", $options)) {
             $this->setData($options["read_as"]);
         }
+
+        return $this;
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    public function getTemplate()
+    {
+        return "SgDatatablesBundle:Column:column.html.twig";
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    public function getAlias()
+    {
+        return "array";
+    }
+
+
+    //-------------------------------------------------
+    // Getters && Setters
+    //-------------------------------------------------
+
+    /**
+     * Get default.
+     *
+     * @return string
+     */
+    public function getDefault()
+    {
+        return $this->default;
+    }
+
+    /**
+     * Set default.
+     *
+     * @param string $default
+     *
+     * @return $this
+     */
+    public function setDefault($default)
+    {
+        $this->default = $default;
 
         return $this;
     }
