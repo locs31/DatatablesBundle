@@ -30,7 +30,7 @@ class DateTimeColumn extends AbstractColumn
      *
      * @var string
      */
-    private $dateFormat;
+    protected $dateFormat;
 
 
     //-------------------------------------------------

@@ -25,28 +25,28 @@ class BooleanColumn extends AbstractColumn
      *
      * @var string
      */
-    private $trueIcon;
+    protected $trueIcon;
 
     /**
      * The icon for a value that is false.
      *
      * @var string
      */
-    private $falseIcon;
+    protected $falseIcon;
 
     /**
      * The label for a value that is true.
      *
      * @var string
      */
-    private $trueLabel;
+    protected $trueLabel;
 
     /**
      * The label for a value that is false.
      *
      * @var string
      */
-    private $falseLabel;
+    protected $falseLabel;
 
 
     //-------------------------------------------------
